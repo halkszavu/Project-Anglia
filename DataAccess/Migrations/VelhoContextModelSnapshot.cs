@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project_Anglia.Data;
 
-namespace Project_Anglia.Migrations
+namespace DataAccess.Migrations
 {
     [DbContext(typeof(VelhoContext))]
     partial class VelhoContextModelSnapshot : ModelSnapshot
@@ -39,7 +39,7 @@ namespace Project_Anglia.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Agents");
+                    b.ToTable("Dead");
                 });
 
             modelBuilder.Entity("Project_Anglia.Data.Family", b =>

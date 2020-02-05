@@ -12,7 +12,15 @@ namespace Project_Anglia.Data
             optionsBuilder.UseSqlite("Data Source=AngliaDB.mdf");
         }
 
-        public DbSet<Agent> Agents { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Agent>().ToTable("Living");
+            modelBuilder.Entity<Agent>().ToTable("Dead");
+            modelBuilder.Entity<Family>().ToTable("Families");
+        }
+
+        public DbSet<Agent> Living { get; set; }
+        public DbSet<Agent> Dead { get; set; }
         public DbSet<Family> Families { get; set; }
     }
 }

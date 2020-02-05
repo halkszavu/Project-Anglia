@@ -1,14 +1,14 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Project_Anglia.Migrations
+namespace DataAccess.Migrations
 {
-    public partial class Populate : Migration
+    public partial class InitDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Agents",
+                name: "Dead",
                 columns: table => new
                 {
                     ID = table.Column<Guid>(nullable: false),
@@ -20,7 +20,7 @@ namespace Project_Anglia.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Agents", x => x.ID);
+                    table.PrimaryKey("PK_Dead", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,7 +39,7 @@ namespace Project_Anglia.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Agents");
+                name: "Dead");
 
             migrationBuilder.DropTable(
                 name: "Families");

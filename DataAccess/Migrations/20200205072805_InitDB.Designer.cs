@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project_Anglia.Data;
 
-namespace Project_Anglia.Migrations
+namespace DataAccess.Migrations
 {
     [DbContext(typeof(VelhoContext))]
-    [Migration("20200204225639_Populate")]
-    partial class Populate
+    [Migration("20200205072805_InitDB")]
+    partial class InitDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,7 +41,7 @@ namespace Project_Anglia.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Agents");
+                    b.ToTable("Dead");
                 });
 
             modelBuilder.Entity("Project_Anglia.Data.Family", b =>

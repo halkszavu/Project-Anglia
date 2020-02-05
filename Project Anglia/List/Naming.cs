@@ -8,9 +8,9 @@ namespace Project_Anglia.List
     {
         static Random random = new Random();
 
-        public static string BoyName(string surname = null) => Fiuk[random.Next(Fiuk.Count)];
+        public static string BoyName() => Fiuk[random.Next(Fiuk.Count)];
 
-        public static string GirlName(string surname = null) => Lanyok[random.Next(Lanyok.Count)];
+        public static string GirlName() => Lanyok[random.Next(Lanyok.Count)];
 
         public static string GetSurname()
         {

@@ -18,14 +18,26 @@ namespace Project_Anglia.Data
         public Agent Mother { get; protected set; }
         public Agent Father { get; protected set; }
 
-        public Family(Agent mother, Agent father)
+        public Family(Living mother, Living father)
         {
             Mother = mother;
             Father = father;
 
+            mother.Naimisissä = true;
+            father.Naimisissä = true;
+
             DesiredChildren = random.Next(10);
         }
 
+        public bool GetChild() => Children.Count < DesiredChildren;
 
+        public string Spouses => $"{Father.Name} - {Mother.Name}";
+
+        public void NewChild()
+        {
+            Living child = new Living(this);
+            Program.LivingPeople.Add(child);
+            Children.Add(child);
+        }
     }
 }

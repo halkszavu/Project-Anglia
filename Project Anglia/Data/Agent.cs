@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace Project_Anglia.Data
 {
-    enum Sex 
+    enum Sex
     {
         MALE,
         FEMALE
@@ -16,7 +14,6 @@ namespace Project_Anglia.Data
     /// </summary>
     class Agent
     {
-        public Guid ID { get; set; }
         /// <summary>
         /// Familyname is always inherited from the father, it can't be changed after birth.
         /// </summary>
@@ -27,15 +24,24 @@ namespace Project_Anglia.Data
         public string GivenName { get; protected set; }
         public Sex Gender { get; protected set; }
         /// <summary>
-        /// The family in which the agent belongs to.
+        /// The year in which the Agent was born.
         /// </summary>
         public int BirthYear { get; protected set; }
+        public Family Parentage { get; protected set; }
+    }
+
+    class Living : Agent
+    {
+        public int Age => Program.Year - BirthYear;
+
+
+    }
+
+    class Dead : Agent
+    {
         /// <summary>
         /// The year of death of the Agent.
         /// </summary>
         public int DeathYear { get; protected set; }
-
-        public ICollection<Family> Families { get; } = new List<Family>();
     }
-
 }

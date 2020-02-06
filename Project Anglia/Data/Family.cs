@@ -18,6 +18,8 @@ namespace Project_Anglia.Data
         public Agent Mother { get; protected set; }
         public Agent Father { get; protected set; }
 
+        public bool DeadParent { get; set; }
+
         public Family(Living mother, Living father)
         {
             Mother = mother;
@@ -26,7 +28,20 @@ namespace Project_Anglia.Data
             mother.Naimisissä = true;
             father.Naimisissä = true;
 
-            DesiredChildren = random.Next(10);
+            DesiredChildren = ChildrenCount();
+        }
+
+        int ChildrenCount()
+        {
+            return Math.Max(Convert.ToInt32(Gauss(2, 4)), 0);
+        }
+        
+        private double Gauss(double mean, double stdDev)
+        {
+            double u1 = 1.0 - random.NextDouble(); //uniform(0,1] random doubles
+            double u2 = 1.0 - random.NextDouble();
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+            return mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
         }
 
         public bool GetChild() => Children.Count < DesiredChildren;
@@ -39,5 +54,8 @@ namespace Project_Anglia.Data
             Program.LivingPeople.Add(child);
             Children.Add(child);
         }
+
+        public void FatherDied(Dead father) => Father = father;
+        public void MotherDied(Dead mother) => Mother = mother;
     }
 }

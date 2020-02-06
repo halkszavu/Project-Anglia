@@ -1,5 +1,6 @@
 ﻿using Project_Anglia.Data;
 using System.Collections.Generic;
+using System.Linq;
 using static System.Console;
 
 namespace Project_Anglia
@@ -17,11 +18,31 @@ namespace Project_Anglia
         static void Main(string[] args)
         {
             Init();
-            for (int i = 0; i < 1000; i++)
-                PassYear();
+            bool folyt = true;
+            while(folyt)
+            {
+                //PassYear();
+                WriteLine("Do you want to finish the simulation? y/n");
+                if (ReadLine() == "y")
+                {
+                    folyt = false;
+                    continue;
+                }
+                WriteLine("How many year do you want to jump?");
+                string yrs;
+                int y;
+                do
+                {
+                    yrs = ReadLine();
+                } while (!int.TryParse(yrs, out y));
+                for (int i = 0; i < y; i++)
+                {
+                    PassYear();
+                }
+            }
 
             WriteLine("FINISHING SIMULATION");
-            ReadKey();
+            System.Threading.Thread.Sleep(800);
         }
 
         static void Init()
@@ -48,11 +69,24 @@ namespace Project_Anglia
                 var person = LivingPeople[i];
                 if (person.IsDying())
                 {
-                    DeadPeople.Add(new Dead(person));
+                    Dead dead = new Dead(person);
+                    DeadPeople.Add(dead);
                     WriteLine($"{person.FamilyName} {person.GivenName} died at the age of {person.Age}");
                     LivingPeople.Remove(person);
                     if (Bakfis.Contains(person))
                         Bakfis.Remove(person);
+                    if (Families.Count > 0)
+                    {
+                        var x = Families.Where(f => f.Mother.ID == person.ID).ToList();
+                        x.AddRange(Families.Where(f => f.Father.ID == person.ID).ToList());
+                        foreach(var item in x)
+                        {
+                            if (item.Father.ID == person.ID)
+                                item.FatherDied(dead);
+                            if (item.Mother.ID == person.ID)
+                                item.MotherDied(dead);
+                        }
+                    }
                 }
             }
 
@@ -60,7 +94,7 @@ namespace Project_Anglia
             {
                 if(!living.Naimisissä && living.Age>16)
                 {//házasuló korban, és hajlandóságban vannak (elég idősek, és még nem házasok)
-                    if (living.Gender == Sex.FEMALE)
+                    if (living.Gender == Sex.FEMALE && !Bakfis.Contains(living))
                         Bakfis.Add(living);
                     else //item.Gender == Sex.MALE
                     {
@@ -76,6 +110,8 @@ namespace Project_Anglia
 
             foreach (var family in Families)
             {
+                if (family.DeadParent || family.Mother is Living livingMom && livingMom.Age > 45)
+                    continue;
                 if(family.GetChild())
                 {
                     WriteLine($"{family.Spouses} got child");

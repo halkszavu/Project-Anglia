@@ -31,6 +31,7 @@ namespace Project_Anglia.Data
 #nullable enable
         public Family? Parentage { get; protected set; }
 #nullable disable
+        public Guid ID { get; protected set; } = Guid.NewGuid();
 
         public string Name => $"{FamilyName} {GivenName}";
     }

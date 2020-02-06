@@ -10,8 +10,9 @@ namespace Project_Anglia
         public static List<Living> LivingPeople { get; set; }
         public static List<Dead> DeadPeople { get; set; }
         public static List<Family> Families { get; set; }
+        public static List<Family> LivingFamilies { get; set; }
 
-        static List<Living> Bakfis;
+        static List<Girl> Bakfis;
 
         public static int Year { get; protected set; }
 
@@ -19,7 +20,7 @@ namespace Project_Anglia
         {
             Init();
             bool folyt = true;
-            while(folyt)
+            while (folyt)
             {
                 //PassYear();
                 WriteLine("Do you want to finish the simulation? y/n");
@@ -28,6 +29,9 @@ namespace Project_Anglia
                     folyt = false;
                     continue;
                 }
+                WriteLine("List the familynames? y/n");
+                if (ReadLine() == "y")
+                    ListFamilyNames();
                 WriteLine("How many year do you want to jump?");
                 string yrs;
                 int y;
@@ -52,10 +56,11 @@ namespace Project_Anglia
             LivingPeople = new List<Living>();
             DeadPeople = new List<Dead>();
             Families = new List<Family>();
-            Bakfis = new List<Living>();
-            for (int i = 0; i < 500; i++)
+            Bakfis = new List<Girl>();
+            LivingFamilies = new List<Family>();
+            for (int i = 0; i < 2000; i++)
             {
-                LivingPeople.Add(new Living());
+                LivingPeople.Add(Living.GetLiving());
             }
         }
 
@@ -71,54 +76,79 @@ namespace Project_Anglia
                 {
                     Dead dead = new Dead(person);
                     DeadPeople.Add(dead);
-                    WriteLine($"{person.FamilyName} {person.GivenName} died at the age of {person.Age}");
+                    //WriteLine($"{person.FamilyName} {person.GivenName} died at the age of {person.Age}");
+                    //Write('✝');
+                    Write('+');
                     LivingPeople.Remove(person);
-                    if (Bakfis.Contains(person))
-                        Bakfis.Remove(person);
-                    if (Families.Count > 0)
-                    {
-                        var x = Families.Where(f => f.Mother.ID == person.ID).ToList();
-                        x.AddRange(Families.Where(f => f.Father.ID == person.ID).ToList());
-                        foreach(var item in x)
-                        {
-                            if (item.Father.ID == person.ID)
-                                item.FatherDied(dead);
-                            if (item.Mother.ID == person.ID)
-                                item.MotherDied(dead);
-                        }
-                    }
+                    if (person is Girl girl && Bakfis.Contains(girl))
+                        Bakfis.Remove(girl);
+                    
                 }
             }
+
+            WriteLine();
 
             foreach (var living in LivingPeople)
             {
-                if(!living.Naimisissä && living.Age>16)
-                {//házasuló korban, és hajlandóságban vannak (elég idősek, és még nem házasok)
-                    if (living.Gender == Sex.FEMALE && !Bakfis.Contains(living))
-                        Bakfis.Add(living);
-                    else //item.Gender == Sex.MALE
+                if (living is Girl girl && !Bakfis.Contains(living) && girl.WantToMarry())
+                    Bakfis.Add(girl);
+                else //item.Gender == Sex.MALE
+                {
+                    var boy = living as Boy;
+                    if (Bakfis.Count > 0 && boy.IsProposing())
                     {
-                        if(Bakfis.Count>0)
+                        try
                         {
-                            Families.Add(new Family(Bakfis[0], living));
-                            WriteLine($"New family: {Families[Families.Count - 1].Spouses}");
-                            Bakfis.RemoveAt(0);
+                            Girl g = boy.Propose(Bakfis);
+                            Family f = new Family(g, boy);
+                            Families.Add(f);
+                            LivingFamilies.Add(f);
+                            //WriteLine($"New family: {Families[Families.Count - 1].Spouses}");
+                            //Write('\u26AD');
+                            Bakfis.Remove(g);
+                            Write('o');
+                        }
+                        catch (NoSuitorException)
+                        {
+                            Write("x");
+                            continue;
                         }
                     }
                 }
             }
 
-            foreach (var family in Families)
+            WriteLine();
+
+            foreach (var family in LivingFamilies)
             {
-                if (family.DeadParent || family.Mother is Living livingMom && livingMom.Age > 45)
-                    continue;
-                if(family.GetChild())
+                if (family.GetChild())
                 {
-                    WriteLine($"{family.Spouses} got child");
+                    //WriteLine($"{family.Spouses} got child");
+                    Write('.');
                     family.NewChild();
                 }
             }
 
+            WriteLine();
+            WriteLine("STATS:");
+            WriteLine($"Average number of children in families: {(float)LivingFamilies.Sum(f=>f.Children.Count)/(float)LivingFamilies.Count}");
+
+        }
+
+        static void ListFamilyNames()
+        {
+            WriteLine("Listing all the families by name and members:");
+
+            List<Agent> agents = new List<Agent>();
+
+            agents.AddRange(LivingPeople);
+            //agents.AddRange(DeadPeople);
+
+            foreach (var item in agents.GroupBy(a => a.FamilyName))
+            {
+                if (item.Count() > 5)
+                    WriteLine("{0,-32} :{1}", item.Key, item.Count());
+            }
         }
     }
 }

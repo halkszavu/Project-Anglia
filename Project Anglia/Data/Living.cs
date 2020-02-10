@@ -18,24 +18,17 @@ namespace Project_Anglia.Data
                 Parentage = null,
                 FamilyName = Naming.GetSurname()
             };
-
-            Living r;
-
             switch (living.Gender)
             {
                 case Sex.MALE:
                     living.GivenName = Naming.BoyName();
-                    r = living as Boy;
-                    break;
+                    return new Boy(living);
                 case Sex.FEMALE:
                     living.GivenName = Naming.GirlName();
-                    r = living as Girl;
-                    break;
+                    return new Girl(living);
                 default:
                     throw new Exception("Genderless agent!");
             }
-
-            return r;
         }
         public static Living Born(Family parentage)
         {
@@ -51,10 +44,10 @@ namespace Project_Anglia.Data
             {
                 case Sex.MALE:
                     living.GivenName = Naming.BoyName();
-                    return living as Boy;
+                    return new Boy(living);
                 case Sex.FEMALE:
                     living.GivenName = Naming.GirlName();
-                    return living as Girl;
+                    return new Girl(living);
                 default:
                     throw new Exception("Genderless agent!");
             }

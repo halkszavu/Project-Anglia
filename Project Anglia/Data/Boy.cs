@@ -12,6 +12,12 @@ namespace Project_Anglia.Data
         {
             Gender = Sex.MALE;
 
+            FamilyName = living.FamilyName;
+            GivenName = living.GivenName;
+            BirthYear = living.BirthYear;
+            Parentage = living.Parentage;
+            Issue = living.Issue;
+            ID = living.ID;
         }
 
         public bool IsProposing()
@@ -28,7 +34,8 @@ namespace Project_Anglia.Data
 
             foreach (var item in x)
             {
-                if (this.CommonAncestor(item) < 5)
+                int y = LowestCommonAncestor(this, item);
+                if (y > 0 && y < 5)
                     continue;
                 else
                     return item;

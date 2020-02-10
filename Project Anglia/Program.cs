@@ -58,7 +58,7 @@ namespace Project_Anglia
             Families = new List<Family>();
             Bakfis = new List<Girl>();
             LivingFamilies = new List<Family>();
-            for (int i = 0; i < 2000; i++)
+            for (int i = 0; i < 30; i++)
             {
                 LivingPeople.Add(Living.GetLiving());
             }
@@ -92,9 +92,8 @@ namespace Project_Anglia
             {
                 if (living is Girl girl && !Bakfis.Contains(living) && girl.WantToMarry())
                     Bakfis.Add(girl);
-                else //item.Gender == Sex.MALE
+                else if(living is Boy boy)
                 {
-                    var boy = living as Boy;
                     if (Bakfis.Count > 0 && boy.IsProposing())
                     {
                         try

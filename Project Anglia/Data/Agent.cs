@@ -37,15 +37,30 @@ namespace Project_Anglia.Data
 
         public string Name => $"{FamilyName} {GivenName}";
 
-        public int CommonAncestor(Agent agent)
+        static public int LowestCommonAncestor(Agent myside, Agent otherside)
         {
-            if (Parentage == null || agent.Parentage == null)
-                return 0;
-            if (Parentage == agent.Parentage)
-                return 1;
+            return -1;
+        }
+
+        static public Agent LCA(Agent root, Agent p, Agent q)
+        {
+            if (root == null)
+                return null;
+
+            if (root == p || root == q)
+                return root;
+
             else
             {
-                return Math.Min(Parentage.Father.CommonAncestor(agent.Parentage.Father), Parentage.Mother.CommonAncestor(agent.Parentage.Mother));
+                Agent motherside = LCA(root.Parentage.Mother, p, q);
+                Agent fatherside = LCA(root.Parentage.Father, p, q);
+
+                if (motherside == null && fatherside == null)
+                    return root;
+                else if (motherside != null)
+                    return motherside;
+                else
+                    return fatherside;
             }
         }
     }
